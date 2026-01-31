@@ -14,6 +14,7 @@
         .stats-card:hover { transform: translateY(-5px); }
         .image-preview { width: 150px; height: 100px; object-fit: cover; border-radius: 8px; }
         .car-image-thumb { width: 100px; height: 75px; object-fit: cover; border-radius: 4px; }
+        .dragover { background-color: #ebf8ff; border-color: #4299e1; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -32,9 +33,6 @@
                     <a href="index.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                         <i class="fas fa-external-link-alt mr-2"></i> View Site
                     </a>
-                    <button onclick="logout()" class="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                    </button>
                 </div>
             </div>
         </div>
@@ -68,15 +66,10 @@
                             <i class="fas fa-upload mr-3"></i>
                             <span class="font-medium">Image Uploads</span>
                         </a>
-                        <a href="#analytics" onclick="showSection('analytics')" 
+                        <a href="#export" onclick="showSection('export')" 
                            class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
-                            <i class="fas fa-chart-bar mr-3"></i>
-                            <span class="font-medium">Analytics</span>
-                        </a>
-                        <a href="#settings" onclick="showSection('settings')" 
-                           class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition">
-                            <i class="fas fa-cog mr-3"></i>
-                            <span class="font-medium">Settings</span>
+                            <i class="fas fa-download mr-3"></i>
+                            <span class="font-medium">Export/Import</span>
                         </a>
                     </nav>
                     
@@ -100,6 +93,23 @@
                                 <span id="soldCarsStat" class="font-bold text-red-600">0</span>
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h4 class="font-bold text-gray-900 mb-3">Data Status</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Storage:</span>
+                                <span id="storageStatus" class="font-bold text-green-600">LocalStorage</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Last Updated:</span>
+                                <span id="lastUpdated" class="font-bold">-</span>
+                            </div>
+                        </div>
+                        <button onclick="clearAllData()" class="w-full mt-4 bg-red-50 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-100 transition text-sm">
+                            <i class="fas fa-trash mr-2"></i> Clear All Data
+                        </button>
                     </div>
                 </div>
             </div>
@@ -150,15 +160,14 @@
                         </div>
                     </div>
 
-                    <!-- Recent Activity -->
+                    <!-- Recent Cars -->
                     <div class="bg-white rounded-xl shadow">
                         <div class="p-6 border-b">
-                            <h3 class="text-lg font-bold text-gray-900">Recent Activity</h3>
+                            <h3 class="text-lg font-bold text-gray-900">Recent Cars</h3>
                         </div>
                         <div class="p-6">
-                            <div id="recentActivity" class="space-y-4">
-                                <!-- Activity items will be loaded here -->
-                                <p class="text-gray-500 text-center py-4">No recent activity</p>
+                            <div id="recentCars" class="space-y-4">
+                                <p class="text-gray-500 text-center py-4">No cars added yet</p>
                             </div>
                         </div>
                     </div>
@@ -218,7 +227,7 @@
                 <div id="addCarSection" class="section-content hidden">
                     <div class="mb-8">
                         <h2 class="text-2xl font-bold text-gray-900">Add New Car</h2>
-                        <p class="text-gray-600">Create a new car listing</p>
+                        <p class="text-gray-600">Create a new car listing with image upload</p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow p-6">
@@ -302,13 +311,15 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
                                         <input type="text" id="carColor" 
-                                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" 
+                                               value="Black">
                                     </div>
                                     
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Dealer Name</label>
                                         <input type="text" id="carDealer" 
-                                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" 
+                                               value="DriveSense Dealer">
                                     </div>
                                     
                                     <div>
@@ -321,15 +332,45 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                         <textarea id="carDescription" rows="4" 
-                                                  class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"></textarea>
+                                                  class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" 
+                                                  placeholder="Describe the car's condition, features, and history..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Image Upload -->
+                                <div class="md:col-span-2 space-y-4">
+                                    <h3 class="text-lg font-bold text-gray-900 mb-4">Car Images</h3>
+                                    
+                                    <!-- Image Upload Area -->
+                                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center" 
+                                         id="dropArea"
+                                         ondragover="handleDragOver(event)"
+                                         ondragleave="handleDragLeave(event)"
+                                         ondrop="handleDrop(event)">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <h4 class="text-lg font-bold text-gray-900 mb-2">Upload Car Images</h4>
+                                        <p class="text-gray-600 mb-4">Drag & drop images here or click to browse</p>
+                                        <input type="file" id="carImagesInput" multiple accept="image/*" 
+                                               class="hidden" onchange="handleImageSelection(event)">
+                                        <label for="carImagesInput" 
+                                               class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer">
+                                            <i class="fas fa-upload mr-2"></i> Select Images
+                                        </label>
+                                        <p class="text-sm text-gray-500 mt-4">Upload up to 5 images (max 2MB each)</p>
                                     </div>
                                     
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Image URLs (one per line)</label>
-                                        <textarea id="carImages" rows="3" 
+                                    <!-- Selected Images Preview -->
+                                    <div id="selectedImagesPreview" class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                                        <!-- Images will appear here -->
+                                    </div>
+                                    
+                                    <!-- Alternative: Image URLs -->
+                                    <div class="mt-6">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Or use Image URLs (one per line)</label>
+                                        <textarea id="carImageUrls" rows="3" 
                                                   class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" 
-                                                  placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
-                                        <p class="text-sm text-gray-500 mt-1">For now, use external image URLs. Local uploads coming soon.</p>
+                                                  placeholder="https://example.com/car-image.jpg&#10;https://example.com/interior.jpg"></textarea>
+                                        <p class="text-sm text-gray-500 mt-1">Use this if you don't want to upload images</p>
                                     </div>
                                 </div>
 
@@ -357,11 +398,11 @@
                             <div class="mt-8 flex justify-end space-x-4">
                                 <button type="button" onclick="resetCarForm()" 
                                         class="bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
-                                    <i class="fas fa-redo mr-2"></i> Reset
+                                    <i class="fas fa-redo mr-2"></i> Reset Form
                                 </button>
                                 <button type="submit" 
                                         class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-                                    <i class="fas fa-plus-circle mr-2"></i> Add Car
+                                    <i class="fas fa-plus-circle mr-2"></i> Add Car to Marketplace
                                 </button>
                             </div>
                         </form>
@@ -371,122 +412,105 @@
                 <!-- Image Uploads Section -->
                 <div id="uploadsSection" class="section-content hidden">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900">Image Uploads</h2>
-                        <p class="text-gray-600">Upload and manage car images</p>
+                        <h2 class="text-2xl font-bold text-gray-900">Image Upload Demo</h2>
+                        <p class="text-gray-600">Upload and preview images (stored in browser)</p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow p-6">
                         <div class="mb-6">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">Upload Images</h3>
-                            <p class="text-gray-600 mb-4">Note: GitHub Pages is a static hosting service. For production, you'll need a backend server to handle file uploads.</p>
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Upload Test Images</h3>
+                            <p class="text-gray-600 mb-4">This is a client-side demo. Images are stored as data URLs in localStorage.</p>
                             
                             <!-- Image Upload Demo -->
                             <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
-                                <h4 class="text-lg font-bold text-gray-900 mb-2">Image Upload Demo</h4>
-                                <p class="text-gray-600 mb-4">Select images to upload (demo only)</p>
-                                <input type="file" id="imageUpload" multiple accept="image/*" 
-                                       class="hidden" onchange="handleImageUpload(event)">
-                                <label for="imageUpload" 
+                                <i class="fas fa-images text-4xl text-gray-400 mb-4"></i>
+                                <h4 class="text-lg font-bold text-gray-900 mb-2">Test Image Upload</h4>
+                                <p class="text-gray-600 mb-4">Select images to test the upload functionality</p>
+                                <input type="file" id="demoImageUpload" multiple accept="image/*" 
+                                       class="hidden" onchange="handleDemoUpload(event)">
+                                <label for="demoImageUpload" 
                                        class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer">
-                                    <i class="fas fa-upload mr-2"></i> Select Images
+                                    <i class="fas fa-upload mr-2"></i> Upload Test Images
                                 </label>
-                                <p class="text-sm text-gray-500 mt-4">Maximum file size: 5MB per image</p>
+                                <p class="text-sm text-gray-500 mt-4">Images are converted to data URLs and stored in your browser</p>
                             </div>
                             
-                            <div id="uploadedImages" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div id="uploadedDemoImages" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <!-- Uploaded images preview will appear here -->
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">Image Management</h3>
-                            <p class="text-gray-600 mb-4">For production implementation, you would need:</p>
-                            <ul class="list-disc pl-5 text-gray-600 space-y-2">
-                                <li>Backend server with file upload handling</li>
-                                <li>Image optimization and resizing</li>
-                                <li>Cloud storage (AWS S3, Google Cloud Storage, etc.)</li>
-                                <li>Database to store image references</li>
-                            </ul>
-                            <div class="mt-6 bg-blue-50 rounded-xl p-6">
-                                <h4 class="font-bold text-blue-900 mb-2">Quick Setup for Development</h4>
-                                <p class="text-blue-700">For now, use external image URLs from services like:</p>
-                                <div class="mt-2 space-x-4">
-                                    <a href="https://unsplash.com" target="_blank" class="inline-block bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
-                                        <i class="fas fa-external-link-alt mr-2"></i> Unsplash
-                                    </a>
-                                    <a href="https://cloudinary.com" target="_blank" class="inline-block bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
-                                        <i class="fas fa-external-link-alt mr-2"></i> Cloudinary
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Analytics Section -->
-                <div id="analyticsSection" class="section-content hidden">
+                <!-- Export/Import Section -->
+                <div id="exportSection" class="section-content hidden">
                     <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900">Analytics</h2>
-                        <p class="text-gray-600">Car listing statistics and insights</p>
+                        <h2 class="text-2xl font-bold text-gray-900">Export & Import Data</h2>
+                        <p class="text-gray-600">Manage your car data</p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-4">Price Distribution</h3>
-                                <div id="priceChart" class="h-64 flex items-center justify-center border rounded-lg">
-                                    <p class="text-gray-500">Chart would show here in production</p>
+                            <!-- Export -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Export Data</h3>
+                                <div class="bg-green-50 rounded-xl p-6">
+                                    <h4 class="font-bold text-green-900 mb-2">Download Complete Data</h4>
+                                    <p class="text-green-700 mb-4">Export all car data including uploaded images as a JSON file.</p>
+                                    <button onclick="exportCompleteData()" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                                        <i class="fas fa-file-export mr-2"></i> Export Complete Data
+                                    </button>
+                                    <p class="text-sm text-green-600 mt-2">Includes images as data URLs</p>
+                                </div>
+                                
+                                <div class="bg-blue-50 rounded-xl p-6">
+                                    <h4 class="font-bold text-blue-900 mb-2">Download Lightweight Data</h4>
+                                    <p class="text-blue-700 mb-4">Export car data without images (only image URLs).</p>
+                                    <button onclick="exportLightweightData()" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                                        <i class="fas fa-file-download mr-2"></i> Export Data (No Images)
+                                    </button>
+                                    <p class="text-sm text-blue-600 mt-2">Smaller file size, faster transfer</p>
                                 </div>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-4">Body Type Distribution</h3>
-                                <div id="bodyTypeChart" class="h-64 flex items-center justify-center border rounded-lg">
-                                    <p class="text-gray-500">Chart would show here in production</p>
+                            
+                            <!-- Import -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Import Data</h3>
+                                <div class="bg-yellow-50 rounded-xl p-6">
+                                    <h4 class="font-bold text-yellow-900 mb-2">Import Car Data</h4>
+                                    <p class="text-yellow-700 mb-4">Upload a JSON file to import car data.</p>
+                                    <input type="file" id="importFile" accept=".json" 
+                                           class="w-full border rounded-lg p-3 mb-4" onchange="handleImportFile(event)">
+                                    <p class="text-sm text-yellow-600">Make sure the file is in the correct format</p>
+                                </div>
+                                
+                                <div class="bg-purple-50 rounded-xl p-6">
+                                    <h4 class="font-bold text-purple-900 mb-2">Reset to Sample Data</h4>
+                                    <p class="text-purple-700 mb-4">Load sample car data with placeholder images.</p>
+                                    <button onclick="loadSampleData()" class="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition">
+                                        <i class="fas fa-database mr-2"></i> Load Sample Data
+                                    </button>
+                                    <p class="text-sm text-purple-600 mt-2">Useful for testing or starting fresh</p>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="mt-8">
-                            <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Views Activity</h3>
+                        <div class="mt-8 pt-6 border-t">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">Data Information</h3>
                             <div class="bg-gray-50 rounded-xl p-6">
-                                <p class="text-gray-600 text-center">In a production environment, this would show car view statistics and user engagement metrics.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Settings Section -->
-                <div id="settingsSection" class="section-content hidden">
-                    <div class="mb-8">
-                        <h2 class="text-2xl font-bold text-gray-900">Settings</h2>
-                        <p class="text-gray-600">Configure your admin panel</p>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow p-6">
-                        <div class="space-y-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-4">Data Management</h3>
-                                <div class="space-y-4">
-                                    <button onclick="exportData()" class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
-                                        <i class="fas fa-download mr-2"></i> Export Car Data (JSON)
-                                    </button>
-                                    <div class="mt-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Import Car Data</label>
-                                        <input type="file" id="importFile" accept=".json" class="border rounded-lg p-2 w-full" onchange="importData(event)">
-                                        <p class="text-sm text-gray-500 mt-2">Upload a JSON file with car data</p>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 mb-2">Storage Method</h4>
+                                        <p class="text-gray-600">Client-side LocalStorage</p>
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <div class="border-t pt-6">
-                                <h3 class="text-lg font-bold text-gray-900 mb-4">Reset Data</h3>
-                                <div class="bg-red-50 rounded-xl p-6">
-                                    <h4 class="font-bold text-red-900 mb-2">Danger Zone</h4>
-                                    <p class="text-red-700 mb-4">These actions cannot be undone. Be careful.</p>
-                                    <button onclick="resetAllData()" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition">
-                                        <i class="fas fa-trash mr-2"></i> Reset All Car Data
-                                    </button>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 mb-2">Images Storage</h4>
+                                        <p class="text-gray-600">Data URLs in JSON</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 mb-2">Browser Support</h4>
+                                        <p class="text-gray-600">Works on all modern browsers</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -495,9 +519,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="adminToast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50"></div>
 
     <!-- Edit Car Modal -->
     <div id="editCarModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
@@ -516,61 +537,72 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="adminToast" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50"></div>
+
     <script>
+        // Global variables
         let carsData = [];
         let currentEditingCarId = null;
+        let selectedImages = []; // For new car form
+        let demoImages = []; // For demo uploads
 
         // Initialize admin panel
         document.addEventListener('DOMContentLoaded', function() {
             loadCarsData();
             showSection('dashboard');
-            
-            // Check for admin authentication (demo only)
-            checkAuth();
+            updateLastUpdatedTime();
+            setInterval(updateLastUpdatedTime, 60000); // Update every minute
         });
 
-        // Check authentication (demo only)
-        function checkAuth() {
-            // In production, implement proper authentication
-            const isAuthenticated = localStorage.getItem('adminAuthenticated');
-            if (!isAuthenticated && window.location.pathname.includes('admin.html')) {
-                // Redirect to login or show login modal
-                // For demo, we'll just continue
-            }
-        }
-
-        // Load cars data from JSON file
-        async function loadCarsData() {
+        // Load cars data from localStorage
+        function loadCarsData() {
             try {
-                const response = await fetch('data/cars.json');
-                if (!response.ok) throw new Error('Failed to load car data');
-                carsData = await response.json();
-                updateDashboardStats();
-                loadCarsTable();
-            } catch (error) {
-                console.error('Error loading cars data:', error);
-                // Try to load from localStorage as fallback
-                const savedData = localStorage.getItem('carsData');
+                const savedData = localStorage.getItem('driveSenseCars');
                 if (savedData) {
                     carsData = JSON.parse(savedData);
-                    updateDashboardStats();
-                    loadCarsTable();
+                } else {
+                    // Try to load from data/cars.json as fallback
+                    fetch('data/cars.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            carsData = data;
+                            saveCarsData();
+                        })
+                        .catch(() => {
+                            // Start with empty array if no data exists
+                            carsData = [];
+                        });
                 }
+                updateDashboardStats();
+                loadCarsTable();
+                updateRecentCars();
+            } catch (error) {
+                console.error('Error loading cars data:', error);
+                showToast('Error loading data', 'error');
+                carsData = [];
             }
         }
 
-        // Save cars data
-        async function saveCarsData() {
+        // Save cars data to localStorage
+        function saveCarsData() {
             try {
-                // Save to localStorage as fallback
-                localStorage.setItem('carsData', JSON.stringify(carsData));
-                
-                // In a real application, you would send this to a server
-                // For GitHub Pages demo, we can only use localStorage
-                showToast('Data saved locally');
+                localStorage.setItem('driveSenseCars', JSON.stringify(carsData));
+                localStorage.setItem('driveSenseLastUpdated', new Date().toISOString());
+                updateLastUpdatedTime();
             } catch (error) {
                 console.error('Error saving data:', error);
                 showToast('Error saving data', 'error');
+            }
+        }
+
+        // Update last updated time display
+        function updateLastUpdatedTime() {
+            const lastUpdated = localStorage.getItem('driveSenseLastUpdated');
+            const element = document.getElementById('lastUpdated');
+            if (element && lastUpdated) {
+                const date = new Date(lastUpdated);
+                element.textContent = date.toLocaleTimeString();
             }
         }
 
@@ -582,16 +614,64 @@
             const soldCars = carsData.filter(car => car.status === 'sold').length;
             
             // Update stats cards
-            document.getElementById('totalCars').textContent = totalCars;
-            document.getElementById('availableCars').textContent = availableCars;
-            document.getElementById('featuredCars').textContent = featuredCars;
+            const totalCarsEl = document.getElementById('totalCars');
+            const availableCarsEl = document.getElementById('availableCars');
+            const featuredCarsEl = document.getElementById('featuredCars');
+            
+            if (totalCarsEl) totalCarsEl.textContent = totalCars;
+            if (availableCarsEl) availableCarsEl.textContent = availableCars;
+            if (featuredCarsEl) featuredCarsEl.textContent = featuredCars;
             
             // Update sidebar stats
-            document.getElementById('totalCarsStat').textContent = totalCars;
-            document.getElementById('availableCarsStat').textContent = availableCars;
-            document.getElementById('featuredCarsStat').textContent = featuredCars;
-            document.getElementById('soldCarsStat').textContent = soldCars;
-            document.getElementById('carsCount').textContent = totalCars;
+            const totalCarsStat = document.getElementById('totalCarsStat');
+            const availableCarsStat = document.getElementById('availableCarsStat');
+            const featuredCarsStat = document.getElementById('featuredCarsStat');
+            const soldCarsStat = document.getElementById('soldCarsStat');
+            const carsCount = document.getElementById('carsCount');
+            
+            if (totalCarsStat) totalCarsStat.textContent = totalCars;
+            if (availableCarsStat) availableCarsStat.textContent = availableCars;
+            if (featuredCarsStat) featuredCarsStat.textContent = featuredCars;
+            if (soldCarsStat) soldCarsStat.textContent = soldCars;
+            if (carsCount) carsCount.textContent = totalCars;
+            
+            // Update storage status
+            const storageEl = document.getElementById('storageStatus');
+            if (storageEl) {
+                const usedKB = JSON.stringify(carsData).length / 1024;
+                storageEl.textContent = `LocalStorage (${usedKB.toFixed(1)} KB)`;
+                storageEl.className = usedKB > 5000 ? 'font-bold text-red-600' : 'font-bold text-green-600';
+            }
+        }
+
+        // Update recent cars display
+        function updateRecentCars() {
+            const recentCarsDiv = document.getElementById('recentCars');
+            if (!recentCarsDiv) return;
+            
+            if (carsData.length === 0) {
+                recentCarsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No cars added yet</p>';
+                return;
+            }
+            
+            // Get 3 most recent cars
+            const recentCars = [...carsData]
+                .sort((a, b) => new Date(b.dateAdded || 0) - new Date(a.dateAdded || 0))
+                .slice(0, 3);
+            
+            recentCarsDiv.innerHTML = recentCars.map(car => `
+                <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
+                    <img src="${car.images && car.images.length > 0 ? car.images[0] : 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=100&h=75&fit=crop'}" 
+                         class="w-16 h-12 object-cover rounded">
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900">${car.year} ${car.make} ${car.model}</h4>
+                        <p class="text-sm text-gray-600">KSH ${car.price.toLocaleString()}</p>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full ${car.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${car.status === 'available' ? 'Available' : 'Sold'}
+                    </span>
+                </div>
+            `).join('');
         }
 
         // Show section
@@ -608,12 +688,207 @@
             document.querySelectorAll('nav a').forEach(link => {
                 link.classList.remove('bg-blue-50', 'text-blue-600');
             });
-            event.target.classList.add('bg-blue-50', 'text-blue-600');
+            if (event && event.target) {
+                event.target.classList.add('bg-blue-50', 'text-blue-600');
+            }
+        }
+
+        // Image handling functions
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('dropArea').classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('dropArea').classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            document.getElementById('dropArea').classList.remove('dragover');
+            
+            const files = event.dataTransfer.files;
+            processImageFiles(files);
+        }
+
+        function handleImageSelection(event) {
+            const files = event.target.files;
+            processImageFiles(files);
+        }
+
+        function processImageFiles(files) {
+            if (files.length + selectedImages.length > 5) {
+                showToast('Maximum 5 images allowed', 'error');
+                return;
+            }
+            
+            for (let file of files) {
+                if (!file.type.startsWith('image/')) {
+                    showToast('Only image files are allowed', 'error');
+                    continue;
+                }
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast(`Image ${file.name} is too large (max 2MB)`, 'error');
+                    continue;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImages.push({
+                        name: file.name,
+                        dataUrl: e.target.result
+                    });
+                    updateImagePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateImagePreview() {
+            const previewDiv = document.getElementById('selectedImagesPreview');
+            previewDiv.innerHTML = '';
+            
+            selectedImages.forEach((img, index) => {
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'relative group';
+                imgDiv.innerHTML = `
+                    <img src="${img.dataUrl}" class="w-full h-24 object-cover rounded-lg">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                        <button onclick="removeImage(${index})" class="bg-red-500 text-white p-1 rounded-full">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1 truncate">${img.name}</p>
+                `;
+                previewDiv.appendChild(imgDiv);
+            });
+            
+            if (selectedImages.length === 0) {
+                previewDiv.innerHTML = '<p class="text-gray-500 text-center col-span-full py-4">No images selected</p>';
+            }
+        }
+
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateImagePreview();
+        }
+
+        // Handle demo uploads
+        function handleDemoUpload(event) {
+            const files = event.target.files;
+            const previewDiv = document.getElementById('uploadedDemoImages');
+            
+            for (let file of files) {
+                if (!file.type.startsWith('image/')) continue;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    demoImages.push({
+                        name: file.name,
+                        dataUrl: e.target.result
+                    });
+                    
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'relative';
+                    imgDiv.innerHTML = `
+                        <img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg">
+                        <p class="text-xs text-gray-600 mt-1 truncate">${file.name}</p>
+                    `;
+                    previewDiv.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            showToast(`Uploaded ${files.length} test image(s)`, 'success');
+            event.target.value = '';
+        }
+
+        // Add new car
+        function addNewCar(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const newCar = {
+                id: Date.now(), // Use timestamp as unique ID
+                make: document.getElementById('carMake').value.trim(),
+                model: document.getElementById('carModel').value.trim(),
+                year: parseInt(document.getElementById('carYear').value),
+                price: parseInt(document.getElementById('carPrice').value),
+                mileage: parseInt(document.getElementById('carMileage').value) || 0,
+                transmission: document.getElementById('carTransmission').value,
+                fuel: document.getElementById('carFuel').value,
+                color: document.getElementById('carColor').value.trim() || 'Black',
+                bodyType: document.getElementById('carBodyType').value,
+                description: document.getElementById('carDescription').value.trim() || 'No description provided.',
+                dealer: document.getElementById('carDealer').value.trim() || 'DriveSense Dealer',
+                location: document.getElementById('carLocation').value.trim() || 'Nairobi, Kenya',
+                rating: parseFloat(document.getElementById('carRating').value) || 4.0,
+                featured: document.getElementById('carFeatured').checked,
+                status: document.getElementById('carAvailable').checked ? 'available' : 'sold',
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+            
+            // Process images
+            const imageUrls = document.getElementById('carImageUrls').value.trim();
+            if (selectedImages.length > 0) {
+                // Use uploaded images
+                newCar.images = selectedImages.map(img => img.dataUrl);
+            } else if (imageUrls) {
+                // Use image URLs
+                newCar.images = imageUrls.split('\n')
+                    .map(url => url.trim())
+                    .filter(url => url);
+            } else {
+                // Use default placeholder
+                newCar.images = ['https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=400&fit=crop'];
+            }
+            
+            // Add to cars data
+            carsData.unshift(newCar);
+            
+            // Save data
+            saveCarsData();
+            
+            // Update UI
+            updateDashboardStats();
+            loadCarsTable();
+            updateRecentCars();
+            
+            // Reset form and clear images
+            resetCarForm();
+            selectedImages = [];
+            updateImagePreview();
+            
+            // Show success message
+            showToast(`${newCar.year} ${newCar.make} ${newCar.model} added successfully!`, 'success');
+            
+            // Switch to cars section
+            showSection('cars');
+        }
+
+        // Reset car form
+        function resetCarForm() {
+            document.getElementById('addCarForm').reset();
+            document.getElementById('carYear').value = new Date().getFullYear();
+            document.getElementById('carRating').value = 4.0;
+            document.getElementById('carAvailable').checked = true;
+            document.getElementById('carLocation').value = 'Nairobi, Kenya';
+            document.getElementById('carColor').value = 'Black';
+            document.getElementById('carDealer').value = 'DriveSense Dealer';
+            document.getElementById('carImageUrls').value = '';
+            selectedImages = [];
         }
 
         // Load cars table
         function loadCarsTable() {
             const tbody = document.getElementById('carsTableBody');
+            if (!tbody) return;
+            
             tbody.innerHTML = '';
             
             if (carsData.length === 0) {
@@ -751,69 +1026,6 @@
             }
         }
 
-        // Add new car
-        function addNewCar(event) {
-            event.preventDefault();
-            
-            // Get form values
-            const newCar = {
-                id: Date.now(), // Simple ID generation
-                make: document.getElementById('carMake').value.trim(),
-                model: document.getElementById('carModel').value.trim(),
-                year: parseInt(document.getElementById('carYear').value),
-                price: parseInt(document.getElementById('carPrice').value),
-                mileage: parseInt(document.getElementById('carMileage').value) || 0,
-                transmission: document.getElementById('carTransmission').value,
-                fuel: document.getElementById('carFuel').value,
-                color: document.getElementById('carColor').value.trim() || 'Black',
-                bodyType: document.getElementById('carBodyType').value,
-                description: document.getElementById('carDescription').value.trim() || 'No description provided.',
-                dealer: document.getElementById('carDealer').value.trim() || 'DriveSense Dealer',
-                location: document.getElementById('carLocation').value.trim() || 'Nairobi, Kenya',
-                rating: parseFloat(document.getElementById('carRating').value) || 4.0,
-                featured: document.getElementById('carFeatured').checked,
-                status: document.getElementById('carAvailable').checked ? 'available' : 'sold',
-                dateAdded: new Date().toISOString().split('T')[0]
-            };
-            
-            // Process image URLs
-            const imagesText = document.getElementById('carImages').value.trim();
-            if (imagesText) {
-                newCar.images = imagesText.split('\n').map(url => url.trim()).filter(url => url);
-            } else {
-                // Default car image
-                newCar.images = ['https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&h=400&fit=crop'];
-            }
-            
-            // Add to cars data
-            carsData.unshift(newCar);
-            
-            // Save data
-            saveCarsData();
-            
-            // Update UI
-            updateDashboardStats();
-            loadCarsTable();
-            
-            // Reset form
-            resetCarForm();
-            
-            // Show success message
-            showToast('Car added successfully!');
-            
-            // Switch to cars section
-            showSection('cars');
-        }
-
-        // Reset car form
-        function resetCarForm() {
-            document.getElementById('addCarForm').reset();
-            document.getElementById('carYear').value = new Date().getFullYear();
-            document.getElementById('carRating').value = 4.0;
-            document.getElementById('carAvailable').checked = true;
-            document.getElementById('carLocation').value = 'Nairobi, Kenya';
-        }
-
         // Edit car
         function editCar(carId) {
             const car = carsData.find(c => c.id === carId);
@@ -872,6 +1084,7 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Image URLs (one per line)</label>
                         <textarea id="editImages" rows="3" 
                                   class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">${car.images ? car.images.join('\n') : ''}</textarea>
+                        <p class="text-sm text-gray-500 mt-1">Edit image URLs. Note: Image upload not available in edit mode.</p>
                     </div>
                     <div class="mt-8 flex justify-end space-x-4">
                         <button type="button" onclick="closeEditModal()" 
@@ -918,12 +1131,13 @@
             // Update UI
             updateDashboardStats();
             loadCarsTable();
+            updateRecentCars();
             
             // Close modal
             closeEditModal();
             
             // Show success message
-            showToast('Car updated successfully!');
+            showToast('Car updated successfully!', 'success');
         }
 
         // Close edit modal
@@ -934,17 +1148,14 @@
 
         // Delete car
         function deleteCar(carId) {
-            if (!confirm('Are you sure you want to delete this car? This action cannot be undone.')) {
+            const car = carsData.find(c => c.id === carId);
+            if (!car) return;
+            
+            if (!confirm(`Are you sure you want to delete ${car.year} ${car.make} ${car.model}? This action cannot be undone.`)) {
                 return;
             }
             
             const carIndex = carsData.findIndex(c => c.id === carId);
-            if (carIndex === -1) return;
-            
-            // Store car info for undo
-            const deletedCar = carsData[carIndex];
-            
-            // Remove from array
             carsData.splice(carIndex, 1);
             
             // Save data
@@ -953,64 +1164,49 @@
             // Update UI
             updateDashboardStats();
             loadCarsTable();
+            updateRecentCars();
             
-            // Show success message with undo option
-            showToast('Car deleted successfully!');
+            // Show success message
+            showToast('Car deleted successfully!', 'success');
         }
 
-        // Handle image upload (demo only)
-        function handleImageUpload(event) {
-            const files = event.target.files;
-            const uploadedImagesDiv = document.getElementById('uploadedImages');
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                
-                // Check file size (demo: 5MB limit)
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast(`File ${file.name} is too large (max 5MB)`, 'error');
-                    continue;
-                }
-                
-                // Create preview
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageDiv = document.createElement('div');
-                    imageDiv.className = 'relative';
-                    imageDiv.innerHTML = `
-                        <img src="${e.target.result}" class="image-preview">
-                        <div class="absolute top-1 right-1 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                            ${file.name}
-                        </div>
-                    `;
-                    uploadedImagesDiv.appendChild(imageDiv);
-                    
-                    showToast(`Image ${file.name} uploaded (demo only)`);
-                };
-                reader.readAsDataURL(file);
-            }
-            
-            // Reset file input
-            event.target.value = '';
-        }
-
-        // Export data
-        function exportData() {
+        // Export functions
+        function exportCompleteData() {
             const dataStr = JSON.stringify(carsData, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
-            const exportFileDefaultName = 'cars-data-' + new Date().toISOString().split('T')[0] + '.json';
+            const exportFileDefaultName = 'drivesense-cars-complete-' + new Date().toISOString().split('T')[0] + '.json';
             
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
             linkElement.setAttribute('download', exportFileDefaultName);
             linkElement.click();
             
-            showToast('Data exported successfully!');
+            showToast('Complete data exported successfully!', 'success');
         }
 
-        // Import data
-        function importData(event) {
+        function exportLightweightData() {
+            // Create lightweight version without data URLs
+            const lightweightData = carsData.map(car => ({
+                ...car,
+                images: car.images ? car.images.filter(url => !url.startsWith('data:')) : []
+            }));
+            
+            const dataStr = JSON.stringify(lightweightData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'drivesense-cars-lightweight-' + new Date().toISOString().split('T')[0] + '.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast('Lightweight data exported successfully!', 'success');
+        }
+
+        // Import functions
+        function handleImportFile(event) {
             const file = event.target.files[0];
             if (!file) return;
             
@@ -1028,7 +1224,8 @@
                         saveCarsData();
                         updateDashboardStats();
                         loadCarsTable();
-                        showToast('Data imported successfully!');
+                        updateRecentCars();
+                        showToast('Data imported successfully!', 'success');
                     }
                 } catch (error) {
                     showToast('Error importing data. Please check the file format.', 'error');
@@ -1041,27 +1238,92 @@
             event.target.value = '';
         }
 
-        // Reset all data
-        function resetAllData() {
-            if (!confirm('WARNING: This will delete ALL car data. This action cannot be undone. Are you sure?')) {
-                return;
+        function loadSampleData() {
+            if (confirm('Load sample data? This will replace your current data with sample cars.')) {
+                // Sample data with placeholder images
+                carsData = [
+                    {
+                        id: Date.now() + 1,
+                        make: "Toyota",
+                        model: "Land Cruiser V8",
+                        year: 2022,
+                        price: 18500000,
+                        mileage: 12000,
+                        transmission: "Automatic",
+                        fuel: "Diesel",
+                        color: "White",
+                        bodyType: "SUV",
+                        description: "Fully loaded Land Cruiser V8 in perfect condition.",
+                        location: "Nairobi, Kenya",
+                        dealer: "Toyota Kenya",
+                        rating: 4.8,
+                        featured: true,
+                        status: "available",
+                        images: ["https://images.unsplash.com/photo-1563720223486-3292c31c5c3b?w=800&h=400&fit=crop&crop=center"],
+                        dateAdded: "2024-01-15"
+                    },
+                    {
+                        id: Date.now() + 2,
+                        make: "Subaru",
+                        model: "Forester XT",
+                        year: 2021,
+                        price: 5200000,
+                        mileage: 22000,
+                        transmission: "Automatic",
+                        fuel: "Petrol",
+                        color: "Blue",
+                        bodyType: "SUV",
+                        description: "Subaru Forester XT with full options package.",
+                        location: "Mombasa, Kenya",
+                        dealer: "Subaru Kenya",
+                        rating: 4.7,
+                        featured: true,
+                        status: "available",
+                        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=400&fit=crop&crop=center"],
+                        dateAdded: "2024-01-10"
+                    },
+                    {
+                        id: Date.now() + 3,
+                        make: "Toyota",
+                        model: "Premio",
+                        year: 2023,
+                        price: 3100000,
+                        mileage: 8000,
+                        transmission: "Automatic",
+                        fuel: "Petrol",
+                        color: "Silver",
+                        bodyType: "Sedan",
+                        description: "Brand new condition Toyota Premio.",
+                        location: "Nairobi, Kenya",
+                        dealer: "CarMax Kenya",
+                        rating: 4.6,
+                        featured: false,
+                        status: "available",
+                        images: ["https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=800&h=400&fit=crop&crop=center"],
+                        dateAdded: "2024-01-05"
+                    }
+                ];
+                
+                saveCarsData();
+                updateDashboardStats();
+                loadCarsTable();
+                updateRecentCars();
+                showToast('Sample data loaded successfully!', 'success');
             }
-            
-            // Clear data
-            carsData = [];
-            localStorage.removeItem('carsData');
-            
-            // Update UI
-            updateDashboardStats();
-            loadCarsTable();
-            
-            showToast('All data has been reset');
         }
 
-        // Logout
-        function logout() {
-            localStorage.removeItem('adminAuthenticated');
-            window.location.href = 'index.html';
+        function clearAllData() {
+            if (confirm('WARNING: This will delete ALL car data. This action cannot be undone. Are you sure?')) {
+                carsData = [];
+                localStorage.removeItem('driveSenseCars');
+                localStorage.removeItem('driveSenseLastUpdated');
+                
+                updateDashboardStats();
+                loadCarsTable();
+                updateRecentCars();
+                
+                showToast('All data has been cleared', 'success');
+            }
         }
 
         // Toast notification
