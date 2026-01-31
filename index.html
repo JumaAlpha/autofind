@@ -71,7 +71,429 @@
         </div>
     </nav>
 
-    <!-- ... Rest of your existing HTML remains the same until the end ... -->
+    <!-- Hero Section with Search -->
+    <div class="hero-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">Find Your Perfect Car</h1>
+                <p class="text-xl opacity-90 mb-10 max-w-2xl mx-auto">Browse thousands of verified cars with the best prices in Kenya</p>
+                
+                <!-- Main Search -->
+                <div class="bg-white rounded-2xl p-6 shadow-2xl max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Make</label>
+                            <select class="w-full border rounded-lg px-4 py-3 text-gray-700 focus:ring-2 focus:ring-blue-500" id="searchMake">
+                                <option value="">Any Make</option>
+                                <option>Toyota</option>
+                                <option>Subaru</option>
+                                <option>Nissan</option>
+                                <option>Mercedes</option>
+                                <option>Mitsubishi</option>
+                                <option>Mazda</option>
+                                <option>Volkswagen</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Model</label>
+                            <input type="text" id="searchModel" class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500" placeholder="Any Model">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                            <select class="w-full border rounded-lg px-4 py-3 text-gray-700 focus:ring-2 focus:ring-blue-500" id="searchPrice">
+                                <option value="">Any Price</option>
+                                <option value="500000">Under KSH 500,000</option>
+                                <option value="1000000">KSH 500,000 - 1M</option>
+                                <option value="2000000">KSH 1M - 2M</option>
+                                <option value="5000000">KSH 2M - 5M</option>
+                                <option value="10000000">Over KSH 5M</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="searchCars()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                                <i class="fas fa-search mr-2"></i> Search Cars
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="showAdvancedFilters()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            <i class="fas fa-filter mr-1"></i> Advanced Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Cars Section -->
+    <section class="py-16 bg-white" id="featured">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900">Featured Cars</h2>
+                    <p class="text-gray-600 mt-2">Top picks from our verified dealers in Kenya</p>
+                </div>
+                <a href="#all-cars" onclick="showAllCars()" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+
+            <!-- Featured Cars Carousel -->
+            <div class="relative">
+                <div class="overflow-hidden">
+                    <div class="flex space-x-6 pb-4" id="featuredCarousel">
+                        <!-- Carousel items will be loaded here -->
+                    </div>
+                </div>
+                <button onclick="scrollCarousel('left')" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-chevron-left text-gray-700"></i>
+                </button>
+                <button onclick="scrollCarousel('right')" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center">
+                    <i class="fas fa-chevron-right text-gray-700"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content with Filters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="all-cars">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Filters Sidebar -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-xl shadow p-6 filter-sidebar sticky top-24 overflow-y-auto">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Filters</h3>
+                    
+                    <!-- Price Range in KSH -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-gray-700 mb-3">Price Range (KSH)</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 price-filter" value="500000" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Under 500K</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 price-filter" value="1000000" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">500K - 1M</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 price-filter" value="2000000" checked onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">1M - 2M</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 price-filter" value="5000000" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">2M - 5M</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 price-filter" value="10000000" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Over 5M</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Year -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-gray-700 mb-3">Year</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 year-filter" value="2020" checked onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">2020 - 2024</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 year-filter" value="2015" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">2015 - 2019</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 year-filter" value="2010" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">2010 - 2014</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Body Type -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-gray-700 mb-3">Body Type</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 body-filter" value="SUV" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">SUV</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 body-filter" value="Sedan" checked onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Sedan</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 body-filter" value="Pickup" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Pickup</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 body-filter" value="Hatchback" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Hatchback</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 body-filter" value="Station Wagon" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Station Wagon</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Fuel Type -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold text-gray-700 mb-3">Fuel Type</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 fuel-filter" value="Petrol" checked onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Petrol</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 fuel-filter" value="Diesel" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Diesel</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 fuel-filter" value="Hybrid" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Hybrid</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="rounded text-blue-600 fuel-filter" value="Electric" onchange="applyFilters()">
+                                <span class="ml-2 text-gray-600">Electric</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="resetFilters()" class="w-full bg-gray-100 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                        <i class="fas fa-redo mr-2"></i> Reset Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cars Grid -->
+            <div class="lg:w-3/4">
+                <!-- Results Header -->
+                <div class="bg-white rounded-xl shadow p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">Available Cars</h3>
+                            <p class="text-gray-600 mt-1">Showing <span id="resultsCount">0</span> results</p>
+                        </div>
+                        <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                            <div class="flex items-center">
+                                <span class="text-gray-600 mr-2">Sort by:</span>
+                                <select class="border rounded-lg px-4 py-2 text-gray-700" id="sortSelect" onchange="applySort()">
+                                    <option value="featured">Featured</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="year-new">Year: Newest First</option>
+                                    <option value="mileage-low">Mileage: Low to High</option>
+                                </select>
+                            </div>
+                            <button onclick="toggleView()" id="viewToggle" class="p-2 rounded-lg border text-gray-600 hover:bg-gray-50">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cars Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="carsGrid">
+                    <!-- Cars will be loaded here -->
+                </div>
+
+                <!-- Load More -->
+                <div class="text-center mt-12">
+                    <button onclick="loadMoreCars()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                        <i class="fas fa-sync-alt mr-2"></i> Load More Cars
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-gray-100" id="how-it-works">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">How It Works</h2>
+                <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Simple steps to find and buy your perfect car in Kenya</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-search text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">1. Search & Find</h3>
+                    <p class="text-gray-600">Browse our extensive inventory of verified cars with detailed descriptions and photos.</p>
+                </div>
+                <div class="bg-white rounded-xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-car text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">2. View & Test Drive</h3>
+                    <p class="text-gray-600">Schedule a viewing and test drive with the seller at your convenience.</p>
+                </div>
+                <div class="bg-white rounded-xl p-8 text-center card-hover">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-handshake text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">3. Buy with Confidence</h3>
+                    <p class="text-gray-600">Complete your purchase with our secure payment and paperwork assistance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">Never Miss a Deal</h2>
+            <p class="text-blue-100 mb-8 max-w-2xl mx-auto">Subscribe to our newsletter and get the best car deals delivered to your inbox</p>
+            <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input type="email" id="newsletterEmail" placeholder="Your email address" class="flex-1 px-6 py-3 rounded-lg text-gray-900">
+                <button onclick="subscribeNewsletter()" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Subscribe
+                </button>
+            </div>
+            <p class="text-sm text-blue-200 mt-4">We respect your privacy. Unsubscribe at any time.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-car text-2xl text-blue-400 mr-3"></i>
+                        <span class="text-2xl font-bold">DriveSense</span>
+                    </div>
+                    <p class="text-gray-400">Your trusted partner for finding the perfect car in Kenya since 2010.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Browse Cars</a></li>
+                        <li><a href="admin.html" class="text-gray-400 hover:text-white">Sell Your Car</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Financing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Testimonials</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contact Info</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-400"></i>
+                            Nairobi, Kenya
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3 text-blue-400"></i>
+                            +254797690174
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            info@DriveSense.co.ke
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 DriveSense Kenya. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Car Detail Modal -->
+    <div id="carDetailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 id="modalCarTitle" class="text-3xl font-bold text-gray-900"></h2>
+                            <div class="flex items-center mt-2">
+                                <span id="modalCarPrice" class="text-2xl font-bold text-blue-600 mr-3"></span>
+                                <span id="modalCarPriceUSD" class="text-gray-500"></span>
+                            </div>
+                        </div>
+                        <button onclick="closeCarDetail()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Car Images -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" id="modalImagesContainer">
+                        <!-- Images will be loaded here -->
+                    </div>
+                    
+                    <!-- Car Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Specifications</h3>
+                            <div class="space-y-3" id="modalCarSpecs">
+                                <!-- Specs will be populated here -->
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Description</h3>
+                            <p id="modalCarDescription" class="text-gray-600 mb-6"></p>
+                            
+                            <div class="bg-blue-50 rounded-xl p-6">
+                                <h4 class="font-bold text-gray-900 mb-3">Interested in this car?</h4>
+                                <div class="flex space-x-4">
+                                    <button onclick="contactSeller()" class="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                                        <i class="fas fa-phone mr-2"></i> Contact Seller
+                                    </button>
+                                    <button onclick="scheduleTestDrive()" class="flex-1 bg-white border border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 transition">
+                                        <i class="fas fa-calendar mr-2"></i> Test Drive
+                                    </button>
+                                </div>
+                                <div class="flex space-x-4 mt-4">
+                                    <button onclick="toggleWishlist(currentModalCarId)" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition">
+                                        <i class="fas fa-heart mr-2"></i> Add to Wishlist
+                                    </button>
+                                    <button onclick="toggleCompare(currentModalCarId)" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition">
+                                        <i class="fas fa-exchange-alt mr-2"></i> Compare
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compare Modal -->
+    <div id="compareModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50">
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Compare Cars</h2>
+                    <button onclick="closeCompareModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="compareContainer">
+                    <!-- Compare items will be added here -->
+                </div>
+                <div class="mt-6 text-center">
+                    <button onclick="clearCompare()" class="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-200">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50"></div>
 
     <script>
         // Currency conversion rate (approximate)
@@ -80,7 +502,7 @@
         // Current currency state
         let currentCurrency = 'KSH';
         
-        // Global cars data - will be loaded from JSON
+        // Global cars data - will be loaded from localStorage
         let carsData = [];
         
         // User state
@@ -88,6 +510,9 @@
         let compareList = JSON.parse(localStorage.getItem('compareList')) || [];
         let currentPage = 1;
         let currentView = 'grid';
+        let currentModalCarId = null;
+        let filteredCars = [];
+        const itemsPerPage = 6;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -98,52 +523,66 @@
             
             // Add currency toggle event
             document.getElementById('currencyToggle').addEventListener('click', toggleCurrency);
+            
+            // Load search filters from URL if present
+            loadSearchFromURL();
         });
 
-        // Load cars data from JSON file
+        // Load cars data from localStorage
         async function loadCarsData() {
             try {
-                const response = await fetch('data/cars.json');
-                if (!response.ok) throw new Error('Failed to load car data');
-                carsData = await response.json();
+                // First try localStorage (where admin saves data)
+                const savedData = localStorage.getItem('driveSenseCars');
+                if (savedData) {
+                    carsData = JSON.parse(savedData);
+                } else {
+                    // Fallback to JSON file
+                    const response = await fetch('data/cars.json');
+                    if (!response.ok) throw new Error('Failed to load car data');
+                    carsData = await response.json();
+                    // Save to localStorage for future use
+                    localStorage.setItem('driveSenseCars', JSON.stringify(carsData));
+                }
+                
+                // Filter out sold cars by default
+                filteredCars = carsData.filter(car => car.status === 'available');
+                
                 loadFeaturedCars();
                 loadCarsGrid();
                 updateCounts();
+                applyFilters();
             } catch (error) {
                 console.error('Error loading cars data:', error);
-                // Load default data if JSON doesn't exist
-                loadDefaultCarsData();
+                // Start with empty array
+                carsData = [];
+                filteredCars = [];
+                loadFeaturedCars();
+                loadCarsGrid();
+                updateCounts();
+                showToast('No car data found. Please add cars in admin panel.', 'error');
             }
         }
 
-        // Load default data if JSON file is not available
-        function loadDefaultCarsData() {
-            carsData = [
-                {
-                    id: 1,
-                    make: "Toyota",
-                    model: "Land Cruiser V8",
-                    year: 2022,
-                    price: 18500000,
-                    mileage: 12000,
-                    transmission: "Automatic",
-                    fuel: "Diesel",
-                    color: "White",
-                    bodyType: "SUV",
-                    description: "Fully loaded Land Cruiser V8 in perfect condition.",
-                    location: "Nairobi, Kenya",
-                    dealer: "Toyota Kenya",
-                    rating: 4.8,
-                    featured: true,
-                    status: "available",
-                    images: ["https://images.unsplash.com/photo-1563720223486-3292c31c5c3b?w=800&h=400&fit=crop&crop=center"],
-                    dateAdded: "2024-01-15"
-                }
-                // ... other default cars
-            ];
-            loadFeaturedCars();
-            loadCarsGrid();
-            updateCounts();
+        // Load search parameters from URL
+        function loadSearchFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const make = urlParams.get('make');
+            const model = urlParams.get('model');
+            const price = urlParams.get('price');
+            
+            if (make) {
+                document.getElementById('searchMake').value = make;
+            }
+            if (model) {
+                document.getElementById('searchModel').value = model;
+            }
+            if (price) {
+                document.getElementById('searchPrice').value = price;
+            }
+            
+            if (make || model || price) {
+                setTimeout(() => searchCars(), 500);
+            }
         }
 
         // Format price based on current currency
@@ -173,13 +612,10 @@
             // Update car detail modal if open
             const modal = document.getElementById('carDetailModal');
             if (!modal.classList.contains('hidden')) {
-                const carId = modal.dataset.currentCarId;
-                if (carId) {
-                    viewCarDetails(parseInt(carId));
-                }
+                viewCarDetails(currentModalCarId);
             }
             
-            showToast(`Currency changed to ${currentCurrency}`);
+            showToast(`Currency changed to ${currentCurrency}`, 'success');
         }
 
         // Load featured cars for carousel
@@ -189,6 +625,22 @@
             if (!carousel) return;
             
             carousel.innerHTML = '';
+            
+            if (featuredCars.length === 0) {
+                carousel.innerHTML = `
+                    <div class="carousel-slide min-w-[400px] fade-in">
+                        <div class="bg-white rounded-xl shadow overflow-hidden card-hover p-8 text-center">
+                            <i class="fas fa-car text-4xl text-gray-300 mb-4"></i>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">No Featured Cars</h3>
+                            <p class="text-gray-600 mb-4">Check back soon for featured cars or browse all available cars.</p>
+                            <a href="admin.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                                <i class="fas fa-plus-circle mr-2"></i> Add Cars in Admin
+                            </a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
             
             featuredCars.forEach(car => {
                 const carSlide = document.createElement('div');
@@ -236,13 +688,26 @@
             
             grid.innerHTML = '';
             
-            const start = (currentPage - 1) * 6;
-            const end = start + 6;
-            const availableCars = carsData.filter(car => car.status !== 'sold');
-            const carsToShow = availableCars.slice(start, end);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const carsToShow = filteredCars.slice(start, end);
             
             if (document.getElementById('resultsCount')) {
-                document.getElementById('resultsCount').textContent = availableCars.length;
+                document.getElementById('resultsCount').textContent = filteredCars.length;
+            }
+            
+            if (carsToShow.length === 0) {
+                grid.innerHTML = `
+                    <div class="md:col-span-2 lg:col-span-3 text-center py-12">
+                        <i class="fas fa-car text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">No Cars Found</h3>
+                        <p class="text-gray-600 mb-4">Try adjusting your filters or check back later.</p>
+                        <a href="admin.html" class="text-blue-600 hover:text-blue-800 font-medium">
+                            <i class="fas fa-plus-circle mr-2"></i> Add Cars in Admin Panel
+                        </a>
+                    </div>
+                `;
+                return;
             }
             
             carsToShow.forEach(car => {
@@ -302,6 +767,102 @@
                 `;
                 grid.appendChild(carCard);
             });
+            
+            // Hide load more button if no more cars
+            const loadMoreBtn = document.querySelector('button[onclick="loadMoreCars()"]');
+            if (loadMoreBtn) {
+                loadMoreBtn.style.display = filteredCars.length > currentPage * itemsPerPage ? 'block' : 'none';
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            // Get selected filters
+            const priceFilters = Array.from(document.querySelectorAll('.price-filter:checked')).map(cb => parseInt(cb.value));
+            const yearFilters = Array.from(document.querySelectorAll('.year-filter:checked')).map(cb => parseInt(cb.value));
+            const bodyFilters = Array.from(document.querySelectorAll('.body-filter:checked')).map(cb => cb.value);
+            const fuelFilters = Array.from(document.querySelectorAll('.fuel-filter:checked')).map(cb => cb.value);
+            
+            // Filter cars
+            filteredCars = carsData.filter(car => {
+                // Filter out sold cars by default
+                if (car.status === 'sold') return false;
+                
+                // Price filter
+                if (priceFilters.length > 0) {
+                    let priceMatch = false;
+                    priceFilters.forEach(priceLimit => {
+                        if (priceLimit === 500000 && car.price < 500000) priceMatch = true;
+                        else if (priceLimit === 1000000 && car.price >= 500000 && car.price <= 1000000) priceMatch = true;
+                        else if (priceLimit === 2000000 && car.price > 1000000 && car.price <= 2000000) priceMatch = true;
+                        else if (priceLimit === 5000000 && car.price > 2000000 && car.price <= 5000000) priceMatch = true;
+                        else if (priceLimit === 10000000 && car.price > 5000000) priceMatch = true;
+                    });
+                    if (!priceMatch) return false;
+                }
+                
+                // Year filter
+                if (yearFilters.length > 0) {
+                    let yearMatch = false;
+                    yearFilters.forEach(yearLimit => {
+                        if (yearLimit === 2020 && car.year >= 2020) yearMatch = true;
+                        else if (yearLimit === 2015 && car.year >= 2015 && car.year <= 2019) yearMatch = true;
+                        else if (yearLimit === 2010 && car.year >= 2010 && car.year <= 2014) yearMatch = true;
+                    });
+                    if (!yearMatch) return false;
+                }
+                
+                // Body type filter
+                if (bodyFilters.length > 0 && !bodyFilters.includes(car.bodyType)) {
+                    return false;
+                }
+                
+                // Fuel type filter
+                if (fuelFilters.length > 0 && !fuelFilters.includes(car.fuel)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Reset to first page
+            currentPage = 1;
+            
+            // Apply current sort
+            applySort();
+            
+            // Update grid
+            loadCarsGrid();
+        }
+
+        // Apply sort
+        function applySort() {
+            const sortValue = document.getElementById('sortSelect').value;
+            
+            switch(sortValue) {
+                case 'price-low':
+                    filteredCars.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filteredCars.sort((a, b) => b.price - a.price);
+                    break;
+                case 'year-new':
+                    filteredCars.sort((a, b) => b.year - a.year);
+                    break;
+                case 'mileage-low':
+                    filteredCars.sort((a, b) => a.mileage - b.mileage);
+                    break;
+                case 'featured':
+                default:
+                    filteredCars.sort((a, b) => {
+                        if (a.featured && !b.featured) return -1;
+                        if (!a.featured && b.featured) return 1;
+                        return b.year - a.year;
+                    });
+                    break;
+            }
+            
+            loadCarsGrid();
         }
 
         // View car details
@@ -309,12 +870,11 @@
             const car = carsData.find(c => c.id === carId);
             if (!car) return;
             
-            // Store current car ID in modal for currency updates
-            document.getElementById('carDetailModal').dataset.currentCarId = carId;
+            currentModalCarId = carId;
             
             document.getElementById('modalCarTitle').textContent = `${car.year} ${car.make} ${car.model}`;
             
-            // Display price in both currencies
+            // Display price
             const priceElement = document.getElementById('modalCarPrice');
             const priceUSDElement = document.getElementById('modalCarPriceUSD');
             
@@ -328,11 +888,56 @@
             
             document.getElementById('modalCarDescription').textContent = car.description;
             
-            // Set main image
-            const mainImage = document.getElementById('modalMainImage');
+            // Set images
+            const imagesContainer = document.getElementById('modalImagesContainer');
+            imagesContainer.innerHTML = '';
+            
             if (car.images && car.images.length > 0) {
-                mainImage.src = car.images[0];
-                mainImage.alt = `${car.make} ${car.model}`;
+                // Main image (larger)
+                const mainImg = document.createElement('div');
+                mainImg.className = 'col-span-2';
+                mainImg.innerHTML = `
+                    <img src="${car.images[0]}" alt="${car.make} ${car.model}" class="w-full h-64 object-cover rounded-xl">
+                `;
+                imagesContainer.appendChild(mainImg);
+                
+                // Thumbnails
+                const thumbsDiv = document.createElement('div');
+                thumbsDiv.className = 'grid grid-cols-2 gap-2';
+                
+                // Show up to 4 additional images
+                const additionalImages = car.images.slice(1, 5);
+                additionalImages.forEach((imgSrc, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgSrc;
+                    thumb.alt = `${car.make} ${car.model} - Image ${index + 2}`;
+                    thumb.className = 'w-full h-32 object-cover rounded-lg cursor-pointer';
+                    thumb.onclick = () => {
+                        // Swap main image with clicked thumbnail
+                        mainImg.querySelector('img').src = imgSrc;
+                        thumb.src = car.images[0];
+                    };
+                    thumbsDiv.appendChild(thumb);
+                });
+                
+                // Fill remaining slots with placeholder if needed
+                while (thumbsDiv.children.length < 4) {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center';
+                    placeholder.innerHTML = '<i class="fas fa-car text-gray-400"></i>';
+                    thumbsDiv.appendChild(placeholder);
+                }
+                
+                imagesContainer.appendChild(thumbsDiv);
+            } else {
+                // No images - show placeholder
+                imagesContainer.innerHTML = `
+                    <div class="col-span-3">
+                        <div class="w-full h-64 bg-gray-200 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-car text-4xl text-gray-400"></i>
+                        </div>
+                    </div>
+                `;
             }
             
             const specsContainer = document.getElementById('modalCarSpecs');
@@ -365,34 +970,205 @@
                     <span class="text-gray-600">Location</span>
                     <span class="font-semibold">${car.location}</span>
                 </div>
+                <div class="flex justify-between py-2 border-b">
+                    <span class="text-gray-600">Status</span>
+                    <span class="font-semibold ${car.status === 'available' ? 'text-green-600' : 'text-red-600'}">${car.status === 'available' ? 'Available' : 'Sold'}</span>
+                </div>
                 <div class="flex justify-between py-2">
                     <span class="text-gray-600">Dealer Rating</span>
                     <span class="font-semibold">${car.rating}/5.0</span>
                 </div>
             `;
             
-            // Update additional images if available
-            const additionalImages = document.querySelectorAll('#carDetailModal .grid-cols-2 img');
-            if (car.images && car.images.length > 1) {
-                additionalImages.forEach((img, index) => {
-                    if (car.images[index + 1]) {
-                        img.src = car.images[index + 1];
-                    }
-                });
-            }
-            
             document.getElementById('carDetailModal').classList.remove('hidden');
         }
 
-        // ... Rest of your existing functions remain the same ...
+        // Toggle wishlist
+        function toggleWishlist(carId) {
+            event.stopPropagation();
+            
+            const car = carsData.find(c => c.id === carId);
+            if (!car) return;
+            
+            const index = wishlist.indexOf(carId);
+            if (index === -1) {
+                wishlist.push(carId);
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                showToast(`${car.year} ${car.make} ${car.model} added to wishlist!`, 'success');
+            } else {
+                wishlist.splice(index, 1);
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                showToast('Removed from wishlist', 'info');
+            }
+            
+            updateCounts();
+            loadFeaturedCars();
+            loadCarsGrid();
+            
+            // Update modal button if this car is currently viewed
+            if (currentModalCarId === carId) {
+                // Button text will update when modal is closed/reopened
+            }
+        }
+
+        // Toggle compare list
+        function toggleCompare(carId) {
+            event.stopPropagation();
+            
+            const car = carsData.find(c => c.id === carId);
+            if (!car) return;
+            
+            if (compareList.length >= 3 && !compareList.includes(carId)) {
+                showToast('You can compare up to 3 cars only', 'error');
+                return;
+            }
+            
+            const index = compareList.indexOf(carId);
+            if (index === -1) {
+                compareList.push(carId);
+                showToast(`${car.year} ${car.make} ${car.model} added to compare list`, 'success');
+            } else {
+                compareList.splice(index, 1);
+                showToast('Removed from compare list', 'info');
+            }
+            
+            localStorage.setItem('compareList', JSON.stringify(compareList));
+            updateCounts();
+            
+            // Update UI
+            loadCarsGrid();
+        }
+
+        // Show wishlist
+        function showWishlist() {
+            if (wishlist.length === 0) {
+                showToast('Your wishlist is empty', 'info');
+                return;
+            }
+            
+            const wishlistCars = carsData.filter(car => wishlist.includes(car.id));
+            let message = 'Your Wishlist:\n\n';
+            wishlistCars.forEach((car, index) => {
+                message += `${index + 1}. ${car.year} ${car.make} ${car.model} - ${formatPrice(car.price)}\n`;
+            });
+            
+            alert(message);
+        }
+
+        // Show compare modal
+        function showCompareModal() {
+            if (compareList.length === 0) {
+                showToast('Add cars to compare first', 'info');
+                return;
+            }
+            
+            const container = document.getElementById('compareContainer');
+            container.innerHTML = '';
+            
+            compareList.forEach(carId => {
+                const car = carsData.find(c => c.id === carId);
+                if (!car) return;
+                
+                const compareCard = document.createElement('div');
+                compareCard.className = 'border rounded-xl p-4';
+                compareCard.innerHTML = `
+                    <img src="${car.images && car.images.length > 0 ? car.images[0] : 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop'}" 
+                         alt="${car.make} ${car.model}" class="w-full h-32 object-cover rounded-lg mb-4">
+                    <h3 class="font-bold text-lg mb-2">${car.make} ${car.model}</h3>
+                    <div class="text-2xl font-bold text-blue-600 mb-4">${formatPrice(car.price)}</div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Year:</span>
+                            <span class="font-semibold">${car.year}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Mileage:</span>
+                            <span class="font-semibold">${car.mileage.toLocaleString()} km</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Fuel:</span>
+                            <span class="font-semibold">${car.fuel}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Transmission:</span>
+                            <span class="font-semibold">${car.transmission}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Body Type:</span>
+                            <span class="font-semibold">${car.bodyType}</span>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCompare(${car.id})" class="w-full mt-4 text-red-600 hover:text-red-800">
+                        <i class="fas fa-times mr-1"></i> Remove
+                    </button>
+                `;
+                container.appendChild(compareCard);
+            });
+            
+            // Fill remaining slots if less than 3 cars
+            while (container.children.length < 3) {
+                const emptySlot = document.createElement('div');
+                emptySlot.className = 'border-2 border-dashed border-gray-300 rounded-xl p-4 flex items-center justify-center';
+                emptySlot.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-plus text-gray-400 text-2xl mb-2"></i>
+                        <p class="text-gray-500">Add car to compare</p>
+                    </div>
+                `;
+                container.appendChild(emptySlot);
+            }
+            
+            document.getElementById('compareModal').classList.remove('hidden');
+        }
+
+        // Remove from compare
+        function removeFromCompare(carId) {
+            const index = compareList.indexOf(carId);
+            if (index > -1) {
+                compareList.splice(index, 1);
+                localStorage.setItem('compareList', JSON.stringify(compareList));
+                updateCounts();
+                showCompareModal(); // Refresh modal
+                showToast('Car removed from comparison', 'info');
+            }
+        }
+
+        // Clear compare list
+        function clearCompare() {
+            compareList = [];
+            localStorage.setItem('compareList', JSON.stringify(compareList));
+            updateCounts();
+            document.getElementById('compareModal').classList.add('hidden');
+            showToast('Compare list cleared', 'info');
+        }
+
+        // Update counts
+        function updateCounts() {
+            document.getElementById('wishlistCount').textContent = wishlist.length;
+            document.getElementById('compareCount').textContent = compareList.length;
+        }
+
+        // Modal controls
+        function closeCarDetail() {
+            document.getElementById('carDetailModal').classList.add('hidden');
+            currentModalCarId = null;
+        }
+
+        function closeCompareModal() {
+            document.getElementById('compareModal').classList.add('hidden');
+        }
 
         // Toast notification
-        function showToast(message) {
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             if (!toast) return;
             
             toast.textContent = message;
-            toast.classList.remove('translate-x-full');
+            toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50 ${type === 'error' ? 'bg-red-500' : type === 'info' ? 'bg-blue-500' : 'bg-green-500'} text-white`;
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
             
             setTimeout(() => {
                 toast.classList.add('translate-x-full');
@@ -417,12 +1193,202 @@
             });
         }
 
+        // Search cars
+        function searchCars() {
+            const make = document.getElementById('searchMake').value;
+            const model = document.getElementById('searchModel').value.toLowerCase();
+            const price = document.getElementById('searchPrice').value;
+            
+            // Update URL with search parameters
+            const urlParams = new URLSearchParams();
+            if (make) urlParams.set('make', make);
+            if (model) urlParams.set('model', model);
+            if (price) urlParams.set('price', price);
+            
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+            
+            // Filter cars based on search
+            filteredCars = carsData.filter(car => {
+                if (car.status === 'sold') return false;
+                
+                if (make && car.make !== make) return false;
+                if (model && !car.model.toLowerCase().includes(model)) return false;
+                
+                if (price) {
+                    const priceNum = parseInt(price);
+                    if (priceNum === 500000 && car.price >= 500000) return false;
+                    else if (priceNum === 1000000 && (car.price < 500000 || car.price > 1000000)) return false;
+                    else if (priceNum === 2000000 && (car.price <= 1000000 || car.price > 2000000)) return false;
+                    else if (priceNum === 5000000 && (car.price <= 2000000 || car.price > 5000000)) return false;
+                    else if (priceNum === 10000000 && car.price <= 5000000) return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            loadCarsGrid();
+            
+            if (filteredCars.length === 0) {
+                showToast('No cars found matching your search criteria', 'info');
+            } else {
+                showToast(`Found ${filteredCars.length} cars`, 'success');
+            }
+        }
+
+        // Show all cars
+        function showAllCars() {
+            // Reset search fields
+            document.getElementById('searchMake').value = '';
+            document.getElementById('searchModel').value = '';
+            document.getElementById('searchPrice').value = '';
+            
+            // Reset filters
+            resetFilters();
+            
+            // Clear URL parameters
+            window.history.replaceState({}, '', window.location.pathname);
+            
+            // Show all available cars
+            filteredCars = carsData.filter(car => car.status === 'available');
+            currentPage = 1;
+            loadCarsGrid();
+            
+            // Scroll to cars section
+            document.getElementById('all-cars').scrollIntoView({ behavior: 'smooth' });
+        }
+
         // Load more cars
         function loadMoreCars() {
             currentPage++;
             loadCarsGrid();
-            showToast(`Loaded page ${currentPage}`);
+            showToast(`Loaded page ${currentPage}`, 'info');
         }
+
+        // Toggle view
+        function toggleView() {
+            const toggleBtn = document.getElementById('viewToggle');
+            if (currentView === 'grid') {
+                currentView = 'list';
+                toggleBtn.innerHTML = '<i class="fas fa-list"></i>';
+                document.getElementById('carsGrid').classList.remove('grid-cols-3');
+                document.getElementById('carsGrid').classList.add('grid-cols-1');
+            } else {
+                currentView = 'grid';
+                toggleBtn.innerHTML = '<i class="fas fa-th-large"></i>';
+                document.getElementById('carsGrid').classList.remove('grid-cols-1');
+                document.getElementById('carsGrid').classList.add('grid-cols-3');
+            }
+        }
+
+        // Contact seller
+        function contactSeller() {
+            const car = carsData.find(c => c.id === currentModalCarId);
+            if (!car) return;
+            
+            const phoneNumber = '+254797690174';
+            const message = `Hello, I'm interested in your ${car.year} ${car.make} ${car.model} listed for ${formatPrice(car.price)}`;
+            
+            // Open WhatsApp with pre-filled message
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            
+            showToast('Opening WhatsApp to contact seller...', 'success');
+        }
+
+        // Schedule test drive
+        function scheduleTestDrive() {
+            const car = carsData.find(c => c.id === currentModalCarId);
+            if (!car) return;
+            
+            const subject = `Test Drive Request: ${car.year} ${car.make} ${car.model}`;
+            const body = `Dear DriveSense Team,\n\nI would like to schedule a test drive for the following car:\n\n- Car: ${car.year} ${car.make} ${car.model}\n- Price: ${formatPrice(car.price)}\n- Location: ${car.location}\n\nPlease contact me to arrange a suitable time.\n\nBest regards,\n[Your Name]`;
+            
+            // Open email client
+            window.open(`mailto:info@DriveSense.co.ke?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+            
+            showToast('Opening email to schedule test drive...', 'success');
+        }
+
+        // Show advanced filters
+        function showAdvancedFilters() {
+            // Scroll to filters section
+            document.querySelector('.filter-sidebar').scrollIntoView({ behavior: 'smooth' });
+            showToast('Advanced filters are available in the sidebar', 'info');
+        }
+
+        // Reset filters
+        function resetFilters() {
+            // Uncheck all filter checkboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Re-check default filters
+            document.querySelector('.price-filter[value="2000000"]').checked = true;
+            document.querySelector('.year-filter[value="2020"]').checked = true;
+            document.querySelector('.body-filter[value="Sedan"]').checked = true;
+            document.querySelector('.fuel-filter[value="Petrol"]').checked = true;
+            
+            applyFilters();
+            showToast('Filters reset to default', 'info');
+        }
+
+        // Subscribe newsletter
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value;
+            
+            if (!email || !email.includes('@')) {
+                showToast('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // In a real app, this would send to a server
+            // For demo, just show success message
+            document.getElementById('newsletterEmail').value = '';
+            showToast('Thank you for subscribing to our newsletter!', 'success');
+            
+            // Save to localStorage
+            const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+            subscribers.push({
+                email: email,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.id === 'carDetailModal') {
+                closeCarDetail();
+            }
+            if (event.target.id === 'compareModal') {
+                closeCompareModal();
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Close modals with Escape key
+            if (event.key === 'Escape') {
+                closeCarDetail();
+                closeCompareModal();
+            }
+            
+            // Search with Ctrl/Cmd + F
+            if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+                event.preventDefault();
+                document.getElementById('searchModel').focus();
+            }
+        });
+
+        // Refresh data when returning from admin page
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || performance.getEntriesByType("navigation")[0].type === 'back_forward') {
+                // Reload data in case it was updated in admin
+                loadCarsData();
+            }
+        });
     </script>
 </body>
 </html>
